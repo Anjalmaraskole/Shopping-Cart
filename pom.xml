@@ -16,6 +16,8 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- Add surefire plugin version property for easy update -->
+        <maven.surefire.plugin.version>3.1.2</maven.surefire.plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -65,20 +67,27 @@
                 <version>${spring.boot.version}</version>
             </plugin>
 
-            <!-- Surefire Plugin for Java 21 Test Fix -->
+            <!-- Surefire Plugin with proper JVM args for Java 21 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.1.2</version>
+                <version>${maven.surefire.plugin.version}</version>
                 <configuration>
+                    <!-- 
+                      Add these opens for reflective access issues 
+                      Fixes your InaccessibleObjectException error
+                    -->
                     <argLine>
                         --add-opens java.base/java.lang=ALL-UNNAMED
                         --add-opens java.base/java.lang.reflect=ALL-UNNAMED
-                        --add-opens java.base/java.io=ALL-UNNAMED
                         --add-opens java.base/java.util=ALL-UNNAMED
                     </argLine>
                 </configuration>
             </plugin>
         </plugins>
+    </build>
+
+</project>
+
 
 
